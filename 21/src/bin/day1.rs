@@ -1,14 +1,14 @@
 use aoc21::read_file;
 use std::error::Error;
 
-fn part1(input: &Vec<i32>) -> Result<i32, Box<dyn Error>> {
+fn part1(input: &[i32]) -> Result<i32, Box<dyn Error>> {
     Ok(input
         .windows(2)
         .map(|a| if a[0] < a[1] { 1 } else { 0 })
         .sum())
 }
 
-fn part2(input: &Vec<i32>) -> Result<i32, Box<dyn Error>> {
+fn part2(input: &[i32]) -> Result<i32, Box<dyn Error>> {
     Ok(input
         .windows(4)
         .map(|i| {
