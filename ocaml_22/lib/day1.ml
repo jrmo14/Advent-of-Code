@@ -27,10 +27,10 @@ let rec firstksum k = function
       else
         match firstksum (k - 1) xs with None -> None | Some a -> Some (a + x))
 
-let part_2 input = firstksum 3 (List.fast_sort compare (build_elves 0 [] input))
+(* need to sort in descending order, so reverse the compare *)
+let part_2 input = firstksum 3 (List.fast_sort (fun x y -> compare y x) (build_elves 0 [] input))
 
 let run () =
-  printf "\n";
   printf "Part 1: %d\n" (part_1 input);
   match part_2 input with
   | None -> printf "Part 2 failed\n"
