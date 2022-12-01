@@ -58,24 +58,24 @@ fn part2(input: &[T]) -> Result<i32, Box<dyn Error>> {
         let o2_count: i32 = count_candidates(&o2_candidates, i);
         let co2_count: i32 = count_candidates(&co2_candidates, i);
 
-        let o2_remove_idxs: Vec<_>;
-        let co2_remove_idxs: Vec<_>;
+        let o2_remove_idxs: Vec<_> = if o2_count >= 0 {
+            get_remove_idxs(&o2_candidates, '1', i)
+        } else {
+            get_remove_idxs(&o2_candidates, '0', i)
+        };
 
-        if o2_count >= 0 {
-            o2_remove_idxs = get_remove_idxs(&o2_candidates, '1', i);
+        let co2_remove_idxs: Vec<_> = if co2_count >= 0 {
+            get_remove_idxs(&co2_candidates, '0', i)
         } else {
-            o2_remove_idxs = get_remove_idxs(&o2_candidates, '0', i);
-        }
-        if co2_count >= 0 {
-            co2_remove_idxs = get_remove_idxs(&co2_candidates, '0', i);
-        } else {
-            co2_remove_idxs = get_remove_idxs(&co2_candidates, '1', i);
-        }
+            get_remove_idxs(&co2_candidates, '1', i)
+        };
+
         if o2_candidates.len() > 1 {
             for &idx in o2_remove_idxs.iter().rev() {
                 o2_candidates.remove(idx);
             }
         }
+
         if co2_candidates.len() > 1 {
             for &idx in co2_remove_idxs.iter().rev() {
                 co2_candidates.remove(idx);

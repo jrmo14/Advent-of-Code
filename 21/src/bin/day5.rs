@@ -57,34 +57,30 @@ impl Line {
         let min_y = i32::min(self.start.y, self.end.y);
         let max_x = i32::max(self.start.x, self.end.x);
         let max_y = i32::max(self.start.y, self.end.y);
-        let x_iter: Box<dyn Iterator<Item = i32>>;
-        let y_iter: Box<dyn Iterator<Item = i32>>;
 
         // The chain repeat thing will fill the iterator with enough of the starting values if it's
         // a horizontal/vertical line
-        if self.start.x == min_x {
-            x_iter =
+        let x_iter: Box<dyn Iterator<Item = i32>> =
+            if self.start.x == min_x {
                 Box::new((min_x..=max_x).chain(
                     repeat(min_x).take((max_y - min_y).saturating_sub(max_x - min_x) as usize),
-                ));
-        } else {
-            x_iter =
+                ))
+            } else {
                 Box::new((min_x..=max_x).rev().chain(
                     repeat(min_x).take((max_y - min_y).saturating_sub(max_x - min_x) as usize),
-                ));
-        }
+                ))
+            };
 
-        if self.start.y == min_y {
-            y_iter =
+        let y_iter: Box<dyn Iterator<Item = i32>> =
+            if self.start.y == min_y {
                 Box::new((min_y..=max_y).chain(
                     repeat(min_y).take((max_x - min_x).saturating_sub(max_y - min_y) as usize),
-                ));
-        } else {
-            y_iter =
+                ))
+            } else {
                 Box::new((min_y..=max_y).rev().chain(
                     repeat(min_y).take((max_x - min_x).saturating_sub(max_y - min_y) as usize),
-                ));
-        }
+                ))
+            };
 
         x_iter.zip(y_iter).map(|(x, y)| Coord { x, y })
     }
