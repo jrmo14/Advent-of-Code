@@ -1,8 +1,0 @@
-(library
- (name aoc)
- (modules aoc) )
-
-(library
- (name day1)
- (libraries aoc)
- (modules day1) )
