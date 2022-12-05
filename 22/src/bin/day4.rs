@@ -6,13 +6,7 @@ type Input = ((u32, u32), (u32, u32));
 fn part1(input: &[Input]) -> Result<u32, Box<dyn Error>> {
     Ok(input
         .iter()
-        .map(|(a, b)| {
-            if (a.0 <= b.0 && a.1 >= b.1) || (b.0 <= a.0 && b.1 >= a.1) {
-                1
-            } else {
-                0
-            }
-        })
+        .map(|(a, b)| u32::from((a.0 <= b.0 && a.1 >= b.1) || (b.0 <= a.0 && b.1 >= a.1)))
         .sum())
 }
 
@@ -20,11 +14,7 @@ fn part2(input: &[Input]) -> Result<i32, Box<dyn Error>> {
     Ok(input
         .iter()
         .map(|(a, b)| {
-            if i32::min(a.1 as i32, b.1 as i32) - i32::max(a.0 as i32, b.0 as i32) >= 0 {
-                1
-            } else {
-                0
-            }
+            i32::from(i32::min(a.1 as i32, b.1 as i32) - i32::max(a.0 as i32, b.0 as i32) >= 0)
         })
         .sum())
 }
@@ -35,7 +25,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .iter()
         .map(|ln| {
             let mut pair = ln.split(',');
-            let mut range_a = pair.next().unwrap().split("-");
+            let mut range_a = pair.next().unwrap().split('-');
             let mut range_b = pair.next().unwrap().split('-');
             (
                 (
