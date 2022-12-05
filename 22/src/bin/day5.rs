@@ -86,8 +86,8 @@ fn parse(lines: Vec<String>) -> Input {
     }
 
     Input {
-        stacks: stacks.clone(),
-        instructions: instructions.clone(),
+        stacks,
+        instructions,
     }
 }
 
