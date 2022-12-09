@@ -1,5 +1,5 @@
 use aoc22::read_file;
-use std::{collections::HashSet, error::Error, ops::Add, ops::Sub};
+use std::{collections::HashSet, error::Error, ops::Add, ops::Neg, ops::Sub};
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash, Debug)]
 struct Point {
@@ -32,6 +32,16 @@ impl Sub for Point {
         Self {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
+        }
+    }
+}
+impl Neg for Point {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self {
+            x: -self.x,
+            y: -self.y,
         }
     }
 }
@@ -79,10 +89,9 @@ fn part1(input: &[Instruction]) -> Result<usize, Box<dyn Error>> {
 }
 
 fn part2(input: &[Instruction]) -> Result<usize, Box<dyn Error>> {
-    let mut head_pos = Point::new(0, 0);
     let mut seen_pos = HashSet::new();
-    let rope = &mut [Point::new(0, 0); 9];
-    seen_pos.insert(rope[8]);
+    let rope = &mut [Point::new(0, 0); 10];
+    seen_pos.insert(rope[9]);
     for &instr in input {
         let (head_move, d) = match instr {
             Instruction::R(d) => (Point::new(1, 0), d),
@@ -91,42 +100,30 @@ fn part2(input: &[Instruction]) -> Result<usize, Box<dyn Error>> {
             Instruction::D(d) => (Point::new(0, -1), d),
         };
         for _ in 0..d {
-            head_pos = head_pos + head_move;
-            let delta = head_pos - rope[0];
-            rope[0] = if delta.x >= 2 {
-                head_pos - X
-            } else if delta.x <= -2 {
-                head_pos + X
-            } else {
-                rope[0]
-            };
-            rope[0] = if delta.y >= 2 {
-                head_pos - Y
-            } else if delta.y <= -2 {
-                head_pos + Y
-            } else {
-                rope[0]
-            };
-            for i in 0..rope.len() - 1 {
-                let prev = rope[i];
-                let cur = rope[i + 1];
+            rope[0] = rope[0] + head_move;
+
+            for i in 1..rope.len() {
+                let prev = rope[i - 1];
+                let cur = rope[i];
                 let delta = prev - cur;
-                rope[i + 1] = if delta.x >= 2 {
-                    rope[i] - X
+                let offset = if delta.x >= 2 {
+                    -X
                 } else if delta.x <= -2 {
-                    rope[i] + X
+                    X
                 } else {
-                    rope[i + 1]
-                };
-                rope[i + 1] = if delta.y >= 2 {
-                    rope[i] - Y
+                    Point::new(0, 0)
+                } + if delta.y >= 2 {
+                    -Y
                 } else if delta.y <= -2 {
-                    rope[i] + Y
+                    Y
                 } else {
-                    rope[i + 1]
+                    Point::new(0, 0)
                 };
+                if offset != Point::new(0, 0) {
+                    rope[i] = prev + offset;
+                }
             }
-            seen_pos.insert(rope[8]);
+            seen_pos.insert(rope[9]);
         }
     }
     Ok(seen_pos.len())
