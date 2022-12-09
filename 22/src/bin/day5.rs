@@ -117,10 +117,4 @@ move 1 from 1 to 2";
         let contents = parse(TEST_DATA.lines().map(|a| String::from(a)).collect::<_>());
         assert_eq!(String::from("CMZ"), part1(&contents).unwrap());
     }
-
-    //#[test]
-    fn test2() {
-        let contents = parse(TEST_DATA.lines().map(|a| String::from(a)).collect::<_>());
-        assert_eq!(String::from("CMZ"), part1(&contents).unwrap());
-    }
 }

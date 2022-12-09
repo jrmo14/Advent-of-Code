@@ -41,7 +41,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod test {
-    use crate::{part1, part2};
+    use crate::part1;
     const TEST_DATA: &str = "mjqjpqmgbljsphdztnvjfqwrcgsmlb";
 
     #[test]

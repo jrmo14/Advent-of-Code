@@ -41,26 +41,3 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("Prob2: {}", part2(&contents)?);
     Ok(())
 }
-
-#[cfg(test)]
-mod test {
-    use crate::{part1, part2};
-
-    #[test]
-    fn test_part1() {
-        let input = [2, 3];
-        let expected = 3;
-        let result = part1(&input);
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap(), expected);
-    }
-
-    #[test]
-    fn test_part2() {
-        let input = [2, 3];
-        let expected = 3;
-        let result = part2(&input);
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap(), expected);
-    }
-}
