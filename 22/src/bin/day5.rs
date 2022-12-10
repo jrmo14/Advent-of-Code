@@ -102,7 +102,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod test {
-    use crate::{parse, part1, part2};
+    use crate::{parse, part1};
     const TEST_DATA: &str = "    [D]    
 [N] [C]    
 [Z] [M] [P]
