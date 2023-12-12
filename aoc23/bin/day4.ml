@@ -66,26 +66,23 @@ let rec take n lst =
 let rec skip n lst =
   if n > 0 then match lst with _ :: t -> skip (n - 1) t | [] -> [] else lst
 
-let rec count_cards acc cards =
+(*let rec count_cards acc cards =
   match cards with
   | x :: t -> 1 + count_cards (take x.num_wins (List.tl cards)) + count_cards t
   | [] -> 0
-
-let part2 input =
-  Some
-    (input
-    |> List.map (fun c -> { win_idx = c.idx; num_wins = count_wins c })
-    |> count_cards)
+*)
+let part2 _input = None
+(* Some
+   (input
+   |> List.map (fun c -> { win_idx = c.idx; num_wins = count_wins c })
+   |> count_cards)
+*)
 
 let run =
-  printf "Day 2\n";
-  let ans1 = part1 input in
-  let _ =
-    match ans1 with
-    | Some ans -> printf "Part 1: %d\n" ans
-    | None -> print_endline "Part 1 is None"
-  in
-  let ans2 = part2 input in
-  match ans2 with
+  printf "Day 4\n";
+  (match part1 input with
+  | Some ans -> printf "Part 1: %d\n" ans
+  | None -> print_endline "Part 1 is None");
+  match part2 input with
   | Some ans -> printf "Part 2: %d\n" ans
   | None -> print_endline "Part 2 is None"
