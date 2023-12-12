@@ -77,9 +77,8 @@ let translate_seed_range (seed, size) range =
 
 let append_if v lst = match v with Some v -> v :: lst | None -> lst
 
-exception Foo of int * int
-
 let translate_range_map seeds map =
+  (* Propagate a list of seeds through a single map *)
   let propagate_seeds (seeds, ranges) current_map =
     List.map (fun seed -> translate_seed_range seed current_map) seeds
     |> List.fold_left
@@ -87,8 +86,9 @@ let translate_range_map seeds map =
            (append_if a (append_if b accum_seeds), append_if r accum_ranges))
          ([], ranges)
   in
+  (* Any un translated seeds "fall through" to the next map *)
   let rem_seeds, translated = List.fold_left propagate_seeds (seeds, []) map in
-  rem_seeds@translated
+  rem_seeds @ translated
 
 (*
 
@@ -111,5 +111,5 @@ let run =
   | Some ans -> printf "Part 1: %d\n" ans
   | None -> print_endline "Part 1 is None");
   match part2 input with
-  | Some ans -> printf "Part 2: %d\n" ans
+  | Some ans -> printf "Part 2: %d\n\n" ans
   | None -> print_endline "Part 2 is None"

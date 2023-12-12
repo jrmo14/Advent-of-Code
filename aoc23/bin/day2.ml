@@ -90,5 +90,5 @@ let run =
   in
   let ans2 = part2 input in
   match ans2 with
-  | Some ans -> printf "Part 2: %d\n" ans
+  | Some ans -> printf "Part 2: %d\n\n" ans
   | None -> print_endline "Part 2 is None"
