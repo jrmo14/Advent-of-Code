@@ -1,5 +1,5 @@
 open Printf
-
+open Util
 exception ParseError of string
 
 let parse = function
@@ -15,10 +15,7 @@ let parse = function
       (time_list, distance_list)
   | _ -> raise (ParseError "There are not 2 lines")
 
-let input = parse (Util.read_lines "res/day6")
-
-let rec zip a b =
-  match (a, b) with x :: xs, y :: ys -> (x, y) :: zip xs ys | _ -> []
+let input = parse (read_lines "res/day6")
 
 let quadratic_special b c =
   let s = Float.sqrt ((b *. b) -. (4. *. c)) in
@@ -70,5 +67,5 @@ let run =
   | Some ans -> printf "Part 1: %d\n" ans
   | None -> print_endline "Part 1 is None");
   match part2 input with
-  | Some ans -> printf "Part 2: %d\n" ans
+  | Some ans -> printf "Part 2: %d\n\n" ans
   | None -> print_endline "Part 2 is None"
