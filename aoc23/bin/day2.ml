@@ -68,8 +68,7 @@ let part1 input =
            if
              List.map (fun r -> check_round_possible r part1_max) game.rounds
              |> List.fold_left ( && ) true
-           then (
-             game.id)
+           then game.id
            else 0)
     |> List.fold_left ( + ) 0)
 
@@ -78,17 +77,14 @@ let part2 input =
     (input
     |> List.map (fun game ->
            let ur = List.fold_left round_union empty_round game.rounds in
-           ur.red * ur.blue * ur.green) |> List.fold_left (+) 0)
+           ur.red * ur.blue * ur.green)
+    |> List.fold_left ( + ) 0)
 
 let run =
   printf "Day 2\n";
-  let ans1 = part1 input in
-  let _ =
-    match ans1 with
-    | Some ans -> printf "Part 1: %d\n" ans
-    | None -> print_endline "Part 1 is None"
-  in
-  let ans2 = part2 input in
-  match ans2 with
+  (match part1 input with
+  | Some ans -> printf "Part 1: %d\n" ans
+  | None -> print_endline "Part 1 is None");
+  match part2 input with
   | Some ans -> printf "Part 2: %d\n\n" ans
   | None -> print_endline "Part 2 is None"

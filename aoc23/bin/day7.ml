@@ -235,5 +235,5 @@ let run =
   | Some ans -> printf "Part 1: %d\n" ans
   | None -> print_endline "Part 1 is None");
   match part2 input with
-  | Some ans -> printf "Part 2: %d\n" ans
+  | Some ans -> printf "Part 2: %d\n\n" ans
   | None -> print_endline "Part 2 is None"
