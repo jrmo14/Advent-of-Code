@@ -17,22 +17,13 @@ let part1 input =
 
 let part2 input =
   let left, right = input in
-  let count_col lst =
-    let counts = Hashtbl.create 10 in
-    List.iter
-      (fun e ->
-        match Hashtbl.find_opt counts e with
-        | Some v -> Hashtbl.replace counts e (v + 1)
-        | None -> Hashtbl.add counts e 1)
-      lst;
-    counts
-  in
-  let right_counts = count_col right in
+  let right_counts = Util.counter right in
   Some
     (List.map
        (fun e ->
-         if Hashtbl.mem right_counts e then e * Hashtbl.find right_counts e
-         else 0)
+         match Hashtbl.find_opt right_counts e with
+         | Some v -> v * e
+         | None -> 0)
        left
     |> List.fold_left ( + ) 0)
 

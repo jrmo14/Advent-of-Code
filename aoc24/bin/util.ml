@@ -10,8 +10,10 @@ let read_lines filename =
     close_in chan;
     List.rev !lines
 
-
-let print_list fmt l = Printf.printf "[ "; List.iter (Printf.printf fmt) l; Printf.printf " ]\n"
+let print_list fmt l =
+  Printf.printf "[ ";
+  List.iter (Printf.printf fmt) l;
+  Printf.printf " ]\n"
 
 let rec zip a b =
   match (a, b) with x :: xs, y :: ys -> (x, y) :: zip xs ys | _ -> []
@@ -31,6 +33,17 @@ let rec gcd a b =
 
 let lcm a b = a * b / gcd a b
 let cycle_list lst = List.to_seq lst |> Seq.cycle
+
+(* Produce a Hashtbl that has the number of occurences of each unique item in `l` *)
+let counter l =
+  let counts = Hashtbl.create 10 in
+  List.iter
+    (fun itm ->
+      match Hashtbl.find_opt counts itm with
+      | Some cnt -> Hashtbl.replace counts itm (cnt + 1)
+      | None -> Hashtbl.add counts itm 1)
+    l;
+  counts
 
 let rec last_itm = function
   | [ x ] -> x

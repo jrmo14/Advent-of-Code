@@ -5,22 +5,18 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github jrmo14/Advent-of-Code))
 
-(authors "Author Name")
-
-(maintainers "Maintainer Name")
+(authors "jrmo14")
 
 (license LICENSE)
 
-(documentation https://url/to/documentation)
-
 (package
  (name aoc24)
- (synopsis "A short synopsis")
- (description "A longer description")
+ (synopsis "Advent of code '24")
+ (description "Ocaml solutions for advent of code '24")
  (depends ocaml dune)
  (tags
-  (topics "to describe" your project)))
+  (topics "Advent of code" "aoc24")))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
