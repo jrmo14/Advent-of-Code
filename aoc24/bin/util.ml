@@ -27,6 +27,9 @@ let any f lst = List.map f lst |> List.fold_left ( || ) false
 let rec take k lst =
   match lst with x :: rem when k > 0 -> x :: take (k - 1) rem | _ -> []
 
+let rec skip k lst = 
+  match lst with _ :: rem when k > 0 -> skip (k - 1) rem | rem -> rem
+
 let rec gcd a b =
   let rem = a mod b in
   if rem == 0 then b else (gcd [@tailcall]) b rem
