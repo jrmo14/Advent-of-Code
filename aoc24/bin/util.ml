@@ -15,29 +15,38 @@ let print_list fmt l =
   List.iter (Printf.printf fmt) l;
   Printf.printf " ]\n"
 
+(** Zip two lists into a list of tuples, if of unequal lenght, the remaining items will be ignored *)
 let rec zip a b =
   match (a, b) with x :: xs, y :: ys -> (x, y) :: zip xs ys | _ -> []
 
+(** Convert a list of binary tuples into two lists *)
 let unzip l =
   List.fold_left (fun (l, s) (x, y) -> (x :: l, y :: s)) ([], []) (List.rev l)
 
+(** True if `f` is true for all items of `lst` *)
 let all f lst = List.map f lst |> List.fold_left ( && ) true
+
+(** True if `f` is true for any item in `lst` *)
 let any f lst = List.map f lst |> List.fold_left ( || ) false
 
+(** Take up to `k` items from lst *)
 let rec take k lst =
   match lst with x :: rem when k > 0 -> x :: take (k - 1) rem | _ -> []
 
+(** Skip up to `k` items from lst *)
 let rec skip k lst = 
-  match lst with _ :: rem when k > 0 -> skip (k - 1) rem | rem -> rem
+  match lst with _ :: rem when k > 0 -> (skip [@tailcall]) (k - 1) rem | rem -> rem
 
 let rec gcd a b =
   let rem = a mod b in
   if rem == 0 then b else (gcd [@tailcall]) b rem
 
 let lcm a b = a * b / gcd a b
+
+(** Cycle through a lists items infinitely *)
 let cycle_list lst = List.to_seq lst |> Seq.cycle
 
-(* Produce a Hashtbl that has the number of occurences of each unique item in `l` *)
+(** Produce a Hashtbl that has the number of occurences of each unique item in `l` *)
 let counter l =
   let counts = Hashtbl.create 10 in
   List.iter
@@ -53,7 +62,7 @@ let rec last_itm = function
   | _ :: rem -> (last_itm [@tailcall]) rem
   | [] -> raise (Invalid_argument "empty list")
 
-(* Fold left over the sequence while f returns some
+(** Fold left over the sequence while f returns some
    until it returns none or the sequence ends,
    then return the last accumulator*)
 let rec fold_left_until f acc seq =

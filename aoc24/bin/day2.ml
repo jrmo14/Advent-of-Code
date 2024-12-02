@@ -5,17 +5,16 @@ let parse input =
     (fun line -> String.split_on_char ' ' line |> List.map int_of_string)
     input
 
+let isSafe pairs =
+  (Util.all (fun (x, y) -> x > y) pairs || Util.all (fun (x, y) -> x < y) pairs)
+  && Util.all (fun (x, y) -> 3 >= Int.abs (x - y)) pairs
+
 let part1 input =
-  let disc pairs =
-    (Util.all (fun (x, y) -> x > y) pairs
-    || Util.all (fun (x, y) -> x < y) pairs)
-    && Util.all (fun (x, y) -> 3 >= Int.abs (x - y)) pairs
-  in
   Some
-    (List.map (fun line -> if Util.pairs line |> disc then 1 else 0) input
+    (List.map (fun line -> if Util.pairs line |> isSafe then 1 else 0) input
     |> List.fold_left ( + ) 0)
 
-(*
+(**
    TIL about infix operators...
    infix range operator from stack overflow
    https://stackoverflow.com/questions/243864/what-is-the-ocaml-idiom-equivalent-to-pythons-range-function
@@ -25,22 +24,17 @@ let ( -- ) i j =
   aux j []
 
 let part2 input =
-  let disc pairs =
-    (Util.all (fun (x, y) -> x > y) pairs
-    || Util.all (fun (x, y) -> x < y) pairs)
-    && Util.all (fun (x, y) -> 3 >= Int.abs (x - y)) pairs
-  in
   Some
     (List.map
        (fun line ->
          (* baseline check... all data are good *)
-         if Util.pairs line |> disc then 1
+         if Util.pairs line |> isSafe then 1
          else if
            (* check if we can make the data good by dropping a single item *)
            Util.any
              (fun idx ->
                Util.pairs (Util.take idx line @ Util.skip (idx + 1) line)
-               |> disc)
+               |> isSafe)
              (0 -- List.length line)
          then 1
          else 0)
