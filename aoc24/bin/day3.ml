@@ -1,12 +1,101 @@
 open Printf
 
-let parse input =
-  List.map
-    (fun _line -> "")
-    input
+type parser_state = BOTTOM | DO | DONT | MUL | COUNT1 | COUNT2
 
-let part1 _input =None
-let part2 _input = None
+type parser_context = {
+  state : parser_state;
+  count : int;
+  a : int;
+  b : int;
+  sum : int;
+  enabled : bool;
+}
+
+(** Finite state machine for processing input
+Just handle if we're processing do/don't commands as well... can be curried when called
+*)
+let consume handle_do ctx c =
+  match ctx.state with
+  | BOTTOM ->
+      if c == 'm' && ctx.enabled then { ctx with state = MUL; count = 1 }
+      else if handle_do && c == 'd' then { ctx with state = DO; count = 1 }
+      else ctx
+  | DO -> (
+      match (ctx.count, c) with
+      | 1, 'o' -> { ctx with count = 2 }
+      | 2, '(' -> { ctx with count = 3 }
+      | 2, 'n' -> { ctx with state = DONT; count = 1 }
+      | 3, ')' -> { ctx with state = BOTTOM; count = 0; enabled = true }
+      | _, 'm' when ctx.enabled -> { ctx with state = MUL; count = 1 }
+      | _, 'd' when handle_do -> { ctx with state = DO; count = 1 }
+      | _ -> { ctx with state = BOTTOM; count = 0 })
+  | DONT -> (
+      match (ctx.count, c) with
+      | 1, '\'' -> { ctx with count = 2 }
+      | 2, 't' -> { ctx with count = 3 }
+      | 3, '(' -> { ctx with count = 4 }
+      | 4, ')' -> { ctx with state = BOTTOM; count = 0; enabled = false }
+      | _, 'm' when ctx.enabled -> { ctx with state = MUL; count = 1 }
+      | _, 'd' when handle_do -> { ctx with state = DO; count = 1 }
+      | _ -> { ctx with state = BOTTOM; count = 0 })
+  | MUL -> (
+      match (ctx.count, c) with
+      | 1, 'u' -> { ctx with count = 2 }
+      | 2, 'l' -> { ctx with count = 3 }
+      | 3, '(' -> { ctx with state = COUNT1; count = 0; a = 0; b = 0 }
+      | _, 'm' when ctx.enabled -> { ctx with state = MUL; count = 1 }
+      | _, 'd' when handle_do -> { ctx with state = DO; count = 1 }
+      | _ -> { ctx with state = BOTTOM; count = 0 })
+  | COUNT1 -> (
+      match c with
+      | '0' .. '9' when ctx.count < 3 ->
+          let a = (ctx.a * 10) + (int_of_char c - int_of_char '0') in
+          { ctx with count = ctx.count + 1; a }
+      | ',' -> { ctx with state = COUNT2; count = 0 }
+      | 'm' when ctx.enabled -> { ctx with state = MUL; count = 1 }
+      | 'd' when handle_do -> { ctx with state = DO; count = 1 }
+      | _ -> { ctx with state = BOTTOM; count = 0 })
+  | COUNT2 -> (
+      match c with
+      | '0' .. '9' when ctx.count < 3 ->
+          let b = (ctx.b * 10) + (int_of_char c - int_of_char '0') in
+          { ctx with count = ctx.count + 1; b }
+      | ')' ->
+          let sum = ctx.sum + (ctx.a * ctx.b) in
+          { ctx with state = BOTTOM; count = 0; a = 0; b = 0; sum }
+      | 'm' when ctx.enabled -> { ctx with state = MUL; count = 1 }
+      | 'd' when handle_do -> { ctx with state = DO; count = 1 }
+      | _ -> { ctx with state = BOTTOM; count = 0 })
+
+(** This parser does nothing...*)
+let parse input = input
+
+let part1 input =
+  Some
+    (List.map
+       (fun line ->
+         (String.fold_left (consume false)
+            { state = BOTTOM; count = 0; sum = 0; a = 0; b = 0; enabled = true }
+            line)
+           .sum)
+       input
+    |> List.fold_left ( + ) 0)
+
+let part2 input =
+  let _, sum =
+    List.fold_left
+      (*Make sure to track the multiply enable across lines*)
+      (fun (enabled, sum) line ->
+        let final_state =
+          String.fold_left (consume true)
+            { state = BOTTOM; count = 0; sum = 0; a = 0; b = 0; enabled }
+            line
+        in
+        (final_state.enabled, final_state.sum + sum))
+      (true, 0) input
+  in
+  Some sum
+
 let run =
   let input = Util.read_lines "res/day3" |> parse in
   printf "Day 3\n";
@@ -14,5 +103,5 @@ let run =
   | Some ans -> printf "Part 1: %d\n" ans
   | None -> print_endline "Part 1 is None");
   match part2 input with
-  | Some ans -> printf "Part 1: %d\n" ans
-  | None -> print_endline "Part 1 is None"
+  | Some ans -> printf "Part 2: %d\n" ans
+  | None -> print_endline "Part 2 is None"
