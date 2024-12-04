@@ -67,34 +67,22 @@ let consume handle_do ctx c =
       | 'd' when handle_do -> { ctx with state = DO; count = 1 }
       | _ -> { ctx with state = BOTTOM; count = 0 })
 
-(** This parser does nothing...*)
-let parse input = input
+(** Fold it all into a single line *)
+let parse input = String.concat "" input
 
 let part1 input =
   Some
-    (List.map
-       (fun line ->
-         (String.fold_left (consume false)
-            { state = BOTTOM; count = 0; sum = 0; a = 0; b = 0; enabled = true }
-            line)
-           .sum)
-       input
-    |> List.fold_left ( + ) 0)
+    (String.fold_left (consume false)
+       { state = BOTTOM; count = 0; sum = 0; a = 0; b = 0; enabled = true }
+       input)
+      .sum
 
 let part2 input =
-  let _, sum =
-    List.fold_left
-      (*Make sure to track the multiply enable across lines*)
-      (fun (enabled, sum) line ->
-        let final_state =
-          String.fold_left (consume true)
-            { state = BOTTOM; count = 0; sum = 0; a = 0; b = 0; enabled }
-            line
-        in
-        (final_state.enabled, final_state.sum + sum))
-      (true, 0) input
-  in
-  Some sum
+  Some
+    (String.fold_left (consume true)
+       { state = BOTTOM; count = 0; sum = 0; a = 0; b = 0; enabled = true }
+       input)
+      .sum
 
 let run =
   let input = Util.read_lines "res/day3" |> parse in
