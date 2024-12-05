@@ -11,9 +11,9 @@ let read_lines filename =
     List.rev !lines
 
 let print_list fmt l =
-  Printf.printf "[ ";
+  Printf.printf "[";
   List.iter (Printf.printf fmt) l;
-  Printf.printf " ]\n"
+  Printf.printf "]\n"
 
 (** Zip two lists into a list of tuples, if of unequal lenght, the remaining items will be ignored *)
 let rec zip a b =
@@ -34,8 +34,36 @@ let rec take k lst =
   match lst with x :: rem when k > 0 -> x :: take (k - 1) rem | _ -> []
 
 (** Skip up to `k` items from lst *)
-let rec skip k lst = 
-  match lst with _ :: rem when k > 0 -> (skip [@tailcall]) (k - 1) rem | rem -> rem
+let rec skip k lst =
+  match lst with
+  | _ :: rem when k > 0 -> (skip [@tailcall]) (k - 1) rem
+  | rem -> rem
+
+let rec contains substr haystack =
+  if String.starts_with ~prefix:substr haystack then true
+  else if String.length substr > String.length haystack then false
+  else
+    (contains [@tailcall]) substr
+      (String.sub haystack 1 (String.length haystack - 1))
+
+let rec rotate k lst =
+  if k > List.length lst then rotate (k - List.length lst) lst
+  else if k == 0 then lst
+  else rotate (k - 1) (List.tl lst @ [ List.hd lst ])
+
+let rec rotate_right k lst =
+  if k > List.length lst then rotate_right (k - List.length lst) lst
+  else rotate (List.length lst - k) lst
+
+(** Take a 2d list and transpose it (swap x and y axes) *)
+let rec transpose = function
+  | [] | [] :: _ -> []
+  | rows -> List.map List.hd rows :: transpose (List.map List.tl rows)
+
+(** Behaves similar to `list(range(i, j))` in python *)
+let ( -- ) i j =
+  let rec aux n acc = if n < i then acc else aux (n - 1) (n :: acc) in
+  aux j []
 
 let rec gcd a b =
   let rem = a mod b in
