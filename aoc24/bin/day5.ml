@@ -7,6 +7,7 @@ let parse input =
       (fun (left, right) elem ->
         match (left, right) with
         | left, Some right -> (left, Some (elem :: right))
+        (* Do it this way to avoid having to trim out the empty string from the list*)
         | left, None when 0 == String.length elem -> (left, Some [])
         | left, right -> (elem :: left, right))
       ([], None) (List.rev input)
@@ -36,6 +37,7 @@ let rec validate_update rules = function
 
 let part1 input =
   let rules_lst, updates = input in
+  (* We're basically making a hashset here *)
   let rules = Hashtbl.create (List.length rules_lst) in
   List.iter (fun rule -> Hashtbl.add rules rule 0) rules_lst;
   Some
