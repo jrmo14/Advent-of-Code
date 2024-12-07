@@ -68,31 +68,37 @@ let part2 input =
 
   let rec walk state test_wall visited =
     let new_pos = compute_offset state.pos state.dir in
-    if Hashtbl.mem visited state then 1
+    if Hashtbl.mem visited state then true
     else (
-      Hashtbl.add visited state 0;
+      Hashtbl.replace visited state 0;
       if 0 == compare new_pos test_wall || Hashtbl.mem walls new_pos then
         let new_dir = guard_rotate state.dir in
         (walk [@tailcall]) { state with dir = new_dir } test_wall visited
       else if in_bounds new_pos bounds then
         (walk [@tailcall]) { state with pos = new_pos } test_wall visited
-      else 0)
+      else false)
+  in
+  let original_visited = Hashtbl.create 10 in
+  let already_known_wall =
+    Hashtbl.to_seq_keys walls |> List.of_seq |> List.hd
+  in
+  let _ =
+    walk { dir = UP; pos = initial_pos } already_known_wall original_visited
   in
 
-  (* walk { dir = UP; pos = initial_pos } (Hashtbl.create 10); *)
-  let bound_x, bound_y = bounds in
-  Some
-    (List.fold_left
-       (fun acc y ->
-         List.fold_left
-           (fun acc x ->
-             acc
-             + walk { dir = UP; pos = initial_pos } (x, y) (Hashtbl.create 1))
-           acc (0 -- bound_x))
-       0 (0 -- bound_y))
+  let new_wall = Hashtbl.create 0 in
+
+  Seq.iter
+    (fun pos ->
+      if walk { dir = UP; pos = initial_pos } pos (Hashtbl.create 1) then
+        let _ = Hashtbl.replace new_wall pos 0 in
+        ())
+    (Hashtbl.to_seq_keys original_visited |> Seq.map (fun s -> s.pos));
+  Some (Hashtbl.length new_wall)
 
 let run =
-  let input = read_lines "res/day6" |> parse in
+  (* Gonna run on test data for now since this is pretty brute force and slow...*)
+  let input = read_lines "res/day6-test" |> parse in
   printf "Day 6\n";
   (match part1 input with
   | Some ans -> printf "Part 1: %d\n" ans
