@@ -4,6 +4,6 @@ let () =
   Day3.run;
   Day4.run;
   Day5.run;
-  (* This guy is run on test data *)
   Day6.run;
-  Day7.run
+  Day7.run;
+Day8.run

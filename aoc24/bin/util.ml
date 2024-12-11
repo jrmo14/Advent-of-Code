@@ -102,6 +102,17 @@ let rec fold_left_until f acc seq =
       | Some v -> (fold_left_until [@tailcall]) f v next
       | None -> acc)
 
+let all_pairs lst =
+  let rec inner acc cur = function
+    | x :: xs -> inner ((cur, x) :: acc) cur xs
+    | _ -> acc
+  in
+  let rec outer acc = function
+    | x :: xs -> outer (inner acc x xs) xs
+    | _ -> acc
+  in
+  outer [] lst
+
 let pairs list =
   let rec inner lst cur acc =
     match lst with
@@ -109,3 +120,10 @@ let pairs list =
     | [] -> acc
   in
   List.rev (inner (List.tl list) (List.hd list) [])
+
+
+let point_add (xa, ya) (xb, yb) = (xa + xb, ya + yb)
+let point_sub (xa, ya) (xb, yb) = (xa - xb, ya - yb)
+let print_point (x, y) = Printf.printf "(%d, %d)\n" x y
+let in_bounds (bound_x, bound_y) (x, y) =
+  x >= 0 && x < bound_x && y >= 0 && y < bound_y
