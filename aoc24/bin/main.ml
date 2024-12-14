@@ -6,4 +6,5 @@ let () =
   Day5.run;
   Day6.run;
   Day7.run;
-Day8.run
+  Day8.run;
+  Day9.run

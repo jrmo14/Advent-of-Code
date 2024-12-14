@@ -121,9 +121,20 @@ let pairs list =
   in
   List.rev (inner (List.tl list) (List.hd list) [])
 
+let chunk k lst =
+  let rec inner lst tmp acc =
+    match lst with
+    | nxt :: rem ->
+        if k == 1 + List.length tmp then
+          (inner [@tailcall]) rem [] ((List.rev (nxt :: tmp))::acc)
+        else (inner [@tailcall]) rem (nxt :: tmp) acc
+    | [] -> if 0 != List.length tmp then tmp::acc else acc
+  in
+  List.rev (inner lst [] [])
 
 let point_add (xa, ya) (xb, yb) = (xa + xb, ya + yb)
 let point_sub (xa, ya) (xb, yb) = (xa - xb, ya - yb)
 let print_point (x, y) = Printf.printf "(%d, %d)\n" x y
+
 let in_bounds (bound_x, bound_y) (x, y) =
   x >= 0 && x < bound_x && y >= 0 && y < bound_y
