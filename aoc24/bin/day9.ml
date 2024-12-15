@@ -109,7 +109,7 @@ let part2 input =
   in
   Some (compact_sectors 0 0 0)
 
-let run =
+let run () =
   let input = read_lines "res/day9" |> parse in
   printf "Day 9\n";
   (match part1 input with

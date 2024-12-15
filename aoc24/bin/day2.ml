@@ -41,7 +41,7 @@ let part2 input =
        input
     |> List.fold_left ( + ) 0)
 
-let run =
+let run ()=
   let input = Util.read_lines "res/day2" |> parse in
   printf "Day 2\n";
   (match part1 input with

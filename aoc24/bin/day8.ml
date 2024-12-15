@@ -73,7 +73,7 @@ let part2 (antenna_locs, bounds) =
            (count_antinodes bounds antennas));
   Some (Hashtbl.length node_locs)
 
-let run =
+let run () =
   let input = read_lines "res/day8" |> parse in
   printf "Day 8\n";
   (match part1 input with

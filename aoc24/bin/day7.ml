@@ -45,7 +45,7 @@ let part2 input =
          if check ~concat_enable:true target vals then acc + target else acc)
        0 input)
 
-let run =
+let run () =
   let input = read_lines "res/day7" |> parse in
   printf "Day 7\n";
   (match part1 input with

@@ -61,7 +61,7 @@ let part2 input =
     (List.filter (fun x -> not (validate_update rules x)) updates
     |> List.map fix_order |> List.map get_middle |> List.fold_left ( + ) 0)
 
-let run =
+let run () =
   let input = read_lines "res/day5" |> parse in
   printf "Day 5\n";
   (match part1 input with

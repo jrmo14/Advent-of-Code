@@ -115,7 +115,7 @@ let part2 input =
        (fun acc coord -> acc + if check coord mat then 1 else 0)
        0 a_coords)
 
-let run =
+let run () =
   let input = read_lines "res/day4" in
   printf "Day 4\n";
   (match part1 input with

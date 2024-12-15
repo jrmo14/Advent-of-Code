@@ -107,7 +107,7 @@ let part2 input =
   Some (Hashtbl.length loop_walls)
 
 (** Gonna run on test data for now since this is pretty brute force and slow...*)
-let run =
+let run ()=
   let input = read_lines "res/day6-test" |> parse in
   printf "Day 6\n";
   (match part1 input with

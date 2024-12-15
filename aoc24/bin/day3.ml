@@ -84,7 +84,7 @@ let part2 input =
        input)
       .sum
 
-let run =
+let run () =
   let input = Util.read_lines "res/day3" |> parse in
   printf "Day 3\n";
   (match part1 input with

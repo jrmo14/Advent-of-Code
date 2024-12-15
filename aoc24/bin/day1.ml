@@ -27,7 +27,7 @@ let part2 input =
        left
     |> List.fold_left ( + ) 0)
 
-let run =
+let run () =
   let input = Util.unzip (Util.read_lines "res/day1" |> parse) in
   printf "Day 1\n";
   (match part1 input with

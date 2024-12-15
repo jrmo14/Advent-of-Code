@@ -107,7 +107,7 @@ let part2 input =
        (fun acc trailhead -> acc + count_trails trailhead)
        0 trailheads)
 
-let run =
+let run () =
   let input = read_lines "res/day10" |> parse in
   printf "Day 10\n";
   (match part1 input with

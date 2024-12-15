@@ -63,7 +63,7 @@ let part2 input =
   in
   Some (List.fold_left (fun acc s -> acc + count_memoized s 75 0) 0 input)
 
-let run =
+let run () =
   let input = read_lines "res/day11" |> parse in
   printf "Day 11\n";
   (match part1 input with
