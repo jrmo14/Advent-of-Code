@@ -15,6 +15,9 @@ let print_list fmt l =
   List.iter (Printf.printf fmt) l;
   Printf.printf "]\n"
 
+(** Decleare our own XOR operator god damnit *)
+let ( ^^ ) a b = (a || b) && not (a && b)
+
 (** Zip two lists into a list of tuples, if of unequal lenght, the remaining items will be ignored *)
 let rec zip a b =
   match (a, b) with x :: xs, y :: ys -> (x, y) :: zip xs ys | _ -> []
@@ -74,9 +77,9 @@ let lcm a b = a * b / gcd a b
 let rec pow a = function
   | 0 -> 1
   | 1 -> a
-  | n -> 
-    let b = pow a (n / 2) in
-    b * b * (if n mod 2 = 0 then 1 else a)
+  | n ->
+      let b = pow a (n / 2) in
+      b * b * if n mod 2 = 0 then 1 else a
 
 (** Cycle through a lists items infinitely *)
 let cycle_list lst = List.to_seq lst |> Seq.cycle
@@ -133,15 +136,58 @@ let chunk k lst =
     match lst with
     | nxt :: rem ->
         if k == 1 + List.length tmp then
-          (inner [@tailcall]) rem [] ((List.rev (nxt :: tmp))::acc)
+          (inner [@tailcall]) rem [] (List.rev (nxt :: tmp) :: acc)
         else (inner [@tailcall]) rem (nxt :: tmp) acc
-    | [] -> if 0 != List.length tmp then tmp::acc else acc
+    | [] -> if 0 != List.length tmp then tmp :: acc else acc
   in
   List.rev (inner lst [] [])
 
 let point_add (xa, ya) (xb, yb) = (xa + xb, ya + yb)
 let point_sub (xa, ya) (xb, yb) = (xa - xb, ya - yb)
+let point_eq (xa, ya) (xb, yb) = xa == xb && ya == yb
 let print_point (x, y) = Printf.printf "(%d, %d)\n" x y
+let string_of_point (x, y) = Printf.sprintf "(%d,%d)" x y
 
 let in_bounds (bound_x, bound_y) (x, y) =
   x >= 0 && x < bound_x && y >= 0 && y < bound_y
+
+let valid_moves loc bounds =
+  [
+    (let left = point_add (-1, 0) loc in
+     if in_bounds bounds left then Some left else None);
+    (let right = point_add (1, 0) loc in
+     if in_bounds bounds right then Some right else None);
+    (let up = point_add (0, -1) loc in
+     if in_bounds bounds up then Some up else None);
+    (let down = point_add (0, 1) loc in
+     if in_bounds bounds down then Some down else None);
+  ]
+  |> List.filter_map (fun x -> x)
+
+type direction = UP | RIGHT | DOWN | LEFT
+
+let string_of_direction = function
+  | UP -> "UP"
+  | RIGHT -> "RIGHT"
+  | DOWN -> "DOWN"
+  | LEFT -> "LEFT"
+
+let array_dirs = [ (0, -1); (1, 0); (0, 1); (-1, 0) ]
+
+let array_move_dir cur = function
+  | UP -> point_add cur (0, -1)
+  | RIGHT -> point_add cur (1, 0)
+  | DOWN -> point_add cur (0, 1)
+  | LEFT -> point_add cur (-1, 0)
+
+let cw_rotate = function
+  | UP -> RIGHT
+  | RIGHT -> DOWN
+  | DOWN -> LEFT
+  | LEFT -> UP
+
+let ccw_rotate = function
+  | RIGHT -> UP
+  | DOWN -> RIGHT
+  | LEFT -> DOWN
+  | UP -> LEFT
