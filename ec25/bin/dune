@@ -1,0 +1,4 @@
+(executable
+ (public_name ec25)
+ (name main)
+ (libraries ec25 domainslib))
