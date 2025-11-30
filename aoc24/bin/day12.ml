@@ -108,7 +108,7 @@ let part2 input =
        (0 -- (Array.length input - 1)))
 
 let run () =
-  let input = read_lines "res/day12-test" |> parse in
+  let input = read_lines "res/day12" |> parse in
   printf "Day 12\n";
   (match part1 input with
   | Some ans -> printf "Part 1: %d\n" ans

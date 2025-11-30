@@ -2,8 +2,11 @@ open Printf
 open Util
 
 type robot = { pos : int * int; vel : int * int }
-let bounds = (101, 103)
-(* let bounds = (11, 7) *)
+
+let boundx, boundy = (101, 103)
+
+(* let (boundx, boundy)= (11, 7) *)
+let bounds = (boundx, boundy)
 let input_file = "res/day14"
 
 let parse_robot line =
@@ -57,31 +60,32 @@ let part1 input =
        [| 0; 0; 0; 0 |] final_robots
     |> Array.fold_left ( * ) 1)
 
-let is_tree robots =
-  let mat = Array.init_matrix 101 103 (fun _ _ -> false) in
-  List.iter
-    (fun r ->
-      let px, py = r.pos in
-      mat.(px).(py) <- true)
-    robots;
-  let bottom =
-    any
-      (fun x -> x > 10)
-      (List.map
-         (fun x ->
-           List.fold_left
-             (fun acc y -> if mat.(x).(y) then acc + 1 else 0)
-             0 (50 -- 102))
-         (0 -- 100))
-  in
+let print_tree mat =
   List.iter
     (fun y ->
       List.iter
-        (fun x -> if mat.(x).(y) then printf "#" else printf ".")
-        (0 -- 100);
+        (fun x -> if mat.(y).(x) then printf "#" else printf ".")
+        (0 -- (boundx - 1));
       printf "\n")
-    (0 -- 102);
-  printf "\n\n";
+    (0 -- (boundy - 1));
+  printf "\n\n"
+
+let is_tree robots =
+  let mat = init_matrix boundx boundy (fun _ _ -> false) in
+  List.iter
+    (fun r ->
+      let px, py = r.pos in
+      mat.(py).(px) <- true)
+    robots;
+  (* Reason that this was probably created by 
+  starting with the tree and running in reverse for n steps to get our input... 
+  so there was no overlap initially... gum, string, hope that our assumption pays off :) *)
+  let counts = counter (List.map (fun x -> x.pos) robots) in
+  let bottom =
+    all (fun v -> v == 1) (Hashtbl.to_seq_values counts |> List.of_seq)
+  in
+
+  (* if bottom then print_tree mat; *)
   bottom
 
 let part2 input =
@@ -89,13 +93,11 @@ let part2 input =
     (let _r, idx =
        fold_left_until
          (fun (robots, idx) _n ->
-         printf "ITER: %d\n" idx;
            let robots = step_robots robots in
            if is_tree robots then None else Some (robots, idx + 1))
-         (input, 0) ((0--24652) |> List.to_seq)
+         (input, 0) (Seq.ints 0)
      in
-     idx)
-
+     idx + 1)
 
 let run () =
   let input = read_lines input_file |> parse in

@@ -18,7 +18,8 @@ let print_list fmt l =
 (** Decleare our own XOR operator god damnit *)
 let ( ^^ ) a b = (a || b) && not (a && b)
 
-(** Zip two lists into a list of tuples, if of unequal lenght, the remaining items will be ignored *)
+(** Zip two lists into a list of tuples, if of unequal lenght, the remaining
+    items will be ignored *)
 let rec zip a b =
   match (a, b) with x :: xs, y :: ys -> (x, y) :: zip xs ys | _ -> []
 
@@ -41,6 +42,15 @@ let rec skip k lst =
   match lst with
   | _ :: rem when k > 0 -> (skip [@tailcall]) (k - 1) rem
   | rem -> rem
+
+let group_by f lst =
+  let rec inner acc cur = function
+    | x :: rem ->
+        if f x then inner acc (x :: cur) rem
+        else inner ((List.rev (x :: cur)) :: acc) [] rem
+    | _ -> List.rev (cur::acc)
+  in
+  inner [] [] lst
 
 let rec contains substr haystack =
   if String.starts_with ~prefix:substr haystack then true
@@ -84,7 +94,8 @@ let rec pow a = function
 (** Cycle through a lists items infinitely *)
 let cycle_list lst = List.to_seq lst |> Seq.cycle
 
-(** Produce a Hashtbl that has the number of occurences of each unique item in `l` *)
+(** Produce a Hashtbl that has the number of occurences of each unique item in
+    `l` *)
 let counter l =
   let counts = Hashtbl.create 10 in
   List.iter
@@ -100,9 +111,8 @@ let rec last_itm = function
   | _ :: rem -> (last_itm [@tailcall]) rem
   | [] -> raise (Invalid_argument "empty list")
 
-(** Fold left over the sequence while f returns some
-   until it returns none or the sequence ends,
-   then return the last accumulator*)
+(** Fold left over the sequence while f returns some until it returns none or
+    the sequence ends, then return the last accumulator*)
 let rec fold_left_until f acc seq =
   match seq () with
   | Seq.Nil -> acc
@@ -112,6 +122,8 @@ let rec fold_left_until f acc seq =
       | Some v -> (fold_left_until [@tailcall]) f v next
       | None -> acc)
 
+(** Produce all (order independent) pairs from a list [1;2;3] ->
+    [(2,3); (1,3); (1,2)] *)
 let all_pairs lst =
   let rec inner acc cur = function
     | x :: xs -> inner ((cur, x) :: acc) cur xs
@@ -123,6 +135,7 @@ let all_pairs lst =
   in
   outer [] lst
 
+(** Produce pairs of items from a list [1;2;3;4] -> [(1,2); (2,3); (3, 4)]*)
 let pairs list =
   let rec inner lst cur acc =
     match lst with
@@ -131,6 +144,7 @@ let pairs list =
   in
   List.rev (inner (List.tl list) (List.hd list) [])
 
+(** Produce chunks of length k *)
 let chunk k lst =
   let rec inner lst tmp acc =
     match lst with
@@ -141,6 +155,10 @@ let chunk k lst =
     | [] -> if 0 != List.length tmp then tmp :: acc else acc
   in
   List.rev (inner lst [] [])
+
+(** Initialize a 2d matrix indexed row column *)
+let init_matrix x y f =
+  Array.init y (fun yi -> Array.init x (fun xi -> f xi yi))
 
 let point_add (xa, ya) (xb, yb) = (xa + xb, ya + yb)
 let point_sub (xa, ya) (xb, yb) = (xa - xb, ya - yb)
