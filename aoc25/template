@@ -9,6 +9,10 @@ let part1 _input = None
 let part2 _input = None
 
 
+let test_data = [  ]
+
+let%test _ = part1 @@ parse test_data = None
+let%test _ = part2 @@ parse test_data = None
 
 
 let run () =

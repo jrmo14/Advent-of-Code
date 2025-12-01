@@ -1,6 +1,4 @@
+open Aoc25
+
 let () =
-  List.iter
-  (fun x -> x ())
-[
-  Day1.run;
-]
+  List.iteri (fun i x -> x ("res/day" ^ string_of_int (1 + i))) [ Day1.run ]

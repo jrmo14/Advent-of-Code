@@ -51,8 +51,14 @@ let part2 input =
   in
   Some count
 
-let run () =
-  let input = read_lines "res/day1" |> parse in
+let test_data =
+  [ "L68"; "L30"; "R48"; "L5"; "R60"; "L55"; "L1"; "L99"; "R14"; "L82" ]
+
+let%test _ = part1 @@ parse test_data = Some 3
+let%test _ = part2 @@ parse test_data = Some 6
+
+let run input_location =
+  let input = read_lines input_location |> parse in
   printf "Day 1\n";
   (match part1 input with
   | Some ans -> printf "Part 1: %d\n" ans
