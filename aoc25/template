@@ -15,8 +15,8 @@ let%test _ = part1 @@ parse test_data = None
 let%test _ = part2 @@ parse test_data = None
 
 
-let run () =
-  let input = read_lines "res/day0" |> parse in
+let run input_location =
+  let input = read_lines input_location |> parse in
   printf "Day 0\n";
   (match part1 input with
   | Some ans -> printf "Part 1: %d\n" ans

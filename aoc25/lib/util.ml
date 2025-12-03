@@ -9,3 +9,9 @@ let read_lines filename =
   with End_of_file ->
     close_in chan;
     List.rev !lines
+
+
+(** Behaves similar to `range(i, j)` in python *)
+let ( -- ) i j =
+  Seq.ints i |> Seq.take (j - i)
+
