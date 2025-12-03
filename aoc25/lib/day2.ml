@@ -38,18 +38,19 @@ let part1 input =
        0 input)
 
 let contains_pat num =
-  let rec check_pat num pat pat_pow =
-    if num == 0 then false
+  let rec check_pat num pat pat_mask =
+    if num == 0 || pat * 10 < pat_mask then false
     else if num == pat then true
-    else if num mod pat_pow == pat then check_pat (num / pat_pow) pat pat_pow
+    else if num mod pat_mask == pat then check_pat (num / pat_mask) pat pat_mask
     else false
   in
   let overall_num_digits = count_digits num in
   let rec check_all_pats pat_size =
-    if pat_size >= (overall_num_digits / 2) + 1 then false
+    if pat_size > overall_num_digits / 2 then false
     else
-      let pat_pow = pow 10 pat_size in
-      if check_pat num (num mod pat_pow) pat_pow then true
+      let pat_mask = pow 10 pat_size in
+      let pat = num mod pat_mask in
+      if check_pat num pat pat_mask then true
       else check_all_pats (pat_size + 1)
   in
   check_all_pats 1
@@ -60,7 +61,11 @@ let part2 input =
        (fun acc (lo, hi) ->
          (lo -- (hi + 1)
          |> Seq.fold_left
-              (fun acc num -> if contains_pat num then num + acc else acc)
+              (fun acc num ->
+                if contains_pat num then
+                  (* printf "Invalid ID: %d\n" num; *)
+                  num + acc
+                else acc)
               0)
          + acc)
        0 input)
@@ -86,6 +91,11 @@ let%test _ =
 
 let%test _ = part1 @@ parse [ test_data ] = Some 1227775554
 let%test _ = part2 @@ parse [ test_data ] = Some 4174379265
+
+(*These cases bit me off the start... *)
+let%test _ = part2 [ (10100, 10101) ] = Some 0
+let%test _ = part2 [ (100100, 100104) ] = Some 100100
+let%test _ = part2 [ (201201, 201204) ] = Some 201201
 
 let run input_location =
   let input = read_lines input_location |> parse in
