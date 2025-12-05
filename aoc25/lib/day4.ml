@@ -47,22 +47,17 @@ let part2 input =
     in
     Seq.fold_left
       (fun acc (x, y) ->
-        acc
-        +
-        if input.(x).(y) != '.' && check_adj input (x, y) then (
-          input.(x).(y) <- 'x';
-          1)
-        else 0)
-      0 coords
+        if input.(x).(y) != '.' && check_adj input (x, y) then (x, y) :: acc
+        else acc)
+      [] coords
   in
   let rec inner acc =
-    let remove_count = mark () in
-    if remove_count == 0 then acc
+    let to_remove = mark () in
+    let n_to_remove = List.length to_remove in
+    if 0 == n_to_remove then acc
     else (
-      Seq.product (Seq.ints 0 |> Seq.take max_x) (Seq.ints 0 |> Seq.take max_y)
-      |> Seq.iter (fun (x, y) ->
-          if input.(x).(y) == 'x' then input.(x).(y) <- '.');
-      inner acc + remove_count)
+      List.iter (fun (x, y) -> input.(x).(y) <- '.') to_remove;
+      (inner [@tailcall]) (acc + n_to_remove))
   in
   Some (inner 0)
 
