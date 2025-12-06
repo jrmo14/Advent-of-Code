@@ -41,6 +41,8 @@ let part1 input =
 let part2 input =
   let max_x = Array.length input in
   let max_y = Array.length input.(0) in
+  (* TODO: this might be slow because of 2d array acesses... maybe try flattening *)
+  (* let flat_array = Array.concat (Array.to_list input) in *)
   let mark () =
     let coords =
       Seq.product (Seq.ints 0 |> Seq.take max_x) (Seq.ints 0 |> Seq.take max_y)

@@ -10,8 +10,9 @@ let read_lines filename =
     close_in chan;
     List.rev !lines
 
-
 (** Behaves similar to `range(i, j)` in python *)
-let ( -- ) i j =
-  Seq.ints i |> Seq.take (j - i)
+let ( -- ) i j = Seq.ints i |> Seq.take (j - i)
 
+let rec any f = function
+  | el :: rem -> if f el then true else (any [@tailcall]) f rem
+  | _ -> false
