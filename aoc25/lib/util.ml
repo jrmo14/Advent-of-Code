@@ -16,3 +16,7 @@ let ( -- ) i j = Seq.ints i |> Seq.take (j - i)
 let rec any f = function
   | el :: rem -> if f el then true else (any [@tailcall]) f rem
   | _ -> false
+
+let rec all f = function
+  | el :: rem -> if not (f el) then false else (all [@tailcall]) f rem
+  | _ -> true
