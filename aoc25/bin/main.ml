@@ -10,7 +10,7 @@ let rec nth n = function
 let () =
   Arg.parse speclist (fun _ -> ()) "";
 
-  let days = [ Day1.run; Day2.run; Day3.run; Day4.run; Day5.run ; Day6.run] in
+  let days = [ Day1.run; Day2.run; Day3.run; Day4.run; Day5.run ; Day6.run; Day7.run] in
   if !day > 0 then
     let r = nth (!day - 1) days in
     r ("res/day" ^ string_of_int !day)
